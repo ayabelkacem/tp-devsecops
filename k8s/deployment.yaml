@@ -20,7 +20,7 @@ spec:
         - name: api
           image: nginx:latest
           securityContext:
-            privileged: true
+            privileged: false
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
