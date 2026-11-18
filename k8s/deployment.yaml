@@ -13,9 +13,15 @@ spec:
       labels:
         app: api
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
         - name: api
           image: nginx:latest
           securityContext:
-            privileged: true
-            runAsUser: 0
+            privileged: false
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
