@@ -66,7 +66,7 @@ jobs:
       - name: Sign image by digest
         env:
           COSIGN_KEY_B64: ${{ secrets.COSIGN_PRIVATE_KEY_B64 }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PASSWORD: "Lab2026Sign"
         run: |
           echo "$COSIGN_KEY_B64" | base64 -d > /tmp/cosign.key
           cosign sign --yes --key /tmp/cosign.key "$IMAGE_DIGEST"
