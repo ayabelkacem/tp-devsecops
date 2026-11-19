@@ -24,11 +24,8 @@ spec:
           required: true
           attestors:
             - entries:
-                - keys:
-                    publicKeys: |-
-                        -----BEGIN PUBLIC KEY-----
-                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEnzYadyUwpXUjOSkQU5I+7ZhQngoX
-                        NpgcCm2/HO7cJWH5DmqtFAJ3WaDngtAPDT4G7FmMI/qmcy0m98vmdzCDOA==
-                        -----END PUBLIC KEY-----
+                - keyless:
+                    issuer: https://token.actions.githubusercontent.com
+                    subject: https://github.com/ayabelkacem/tp-devsecops/.github/workflows/ci.yml@refs/heads/main
                     rekor:
                       ignoreTlog: true
