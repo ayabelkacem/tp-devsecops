@@ -66,4 +66,13 @@ jobs:
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY "$IMAGE_DIGEST"
+        run: |
+          if [ -z "$COSIGN_PRIVATE_KEY" ]; then
+            echo "::error::COSIGN_PRIVATE_KEY is not configured in protected repository variables."
+            exit 1
+          fi
+          if [ -z "$COSIGN_PASSWORD" ]; then
+            echo "::error::COSIGN_PASSWORD is not configured in protected repository variables."
+            exit 1
+          fi
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "$IMAGE_DIGEST"
