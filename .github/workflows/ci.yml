@@ -31,3 +31,39 @@ jobs:
             -w /work \
             aquasec/trivy:0.65.0 \
             config --severity HIGH,CRITICAL --exit-code 1 k8s/
+
+  build-sign:
+    runs-on: ubuntu-latest
+    needs: [secret-scan, iac-scan]
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/ayabelkacem/tp-devsecops
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Build and push
+        run: |
+          docker build -t $IMAGE:${{ github.sha }} .
+          docker push $IMAGE:${{ github.sha }}
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE:${{ github.sha }})
+          echo "IMAGE_DIGEST=$DIGEST" >> $GITHUB_ENV
+      - name: Install Syft
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/v1.18.1/install.sh | sh -s -- -b /usr/local/bin v1.18.1
+      - name: Generate SBOM (CycloneDX)
+        run: syft "$IMAGE_DIGEST" -o cyclonedx-json=sbom.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cdx.json
+      - uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: v2.4.1
+      - name: Sign image by digest
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: cosign sign --yes --key env://COSIGN_PRIVATE_KEY "$IMAGE_DIGEST"

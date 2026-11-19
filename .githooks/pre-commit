@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "Running Gitleaks on staged changes..."
+export MSYS_NO_PATHCONV=1
+docker run --rm -v "$(pwd -W):/repo" zricethezav/gitleaks:latest protect --staged --source /repo -v --redact
+if [ $? -ne 0 ]; then
+  echo "COMMIT BLOCKED: secret detected."
+  exit 1
+fi
