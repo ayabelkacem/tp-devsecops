@@ -24,8 +24,11 @@ spec:
           required: true
           attestors:
             - entries:
-                - keyless:
-                    issuer: https://token.actions.githubusercontent.com
-                    subjectRegExp: "^https://github.com/ayabelkacem/tp-devsecops/.github/workflows/ci.yml@.*$"
+                - keys:
+                    publicKeys: |-
+                        -----BEGIN PUBLIC KEY-----
+                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUryZiV6no7BdTbRvP9sODd6URumK
+                        avYUeTOD8pq3qXOH7x1bz8QnSrx1CYR9Wa7XwPpXAtyOpF/230nKz7joRw==
+                        -----END PUBLIC KEY-----
                     rekor:
                       ignoreTlog: true
