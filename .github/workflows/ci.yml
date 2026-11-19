@@ -69,5 +69,7 @@ jobs:
           COSIGN_PASSWORD: "Lab2026Sign"
         run: |
           echo "$COSIGN_KEY_B64" | base64 -d > /tmp/cosign.key
+          sha256sum /tmp/cosign.key
           cosign sign --yes --key /tmp/cosign.key "$IMAGE_DIGEST"
           rm -f /tmp/cosign.key
+
