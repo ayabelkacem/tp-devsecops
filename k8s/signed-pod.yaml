@@ -11,7 +11,7 @@ spec:
       type: RuntimeDefault
   containers:
     - name: api
-      image: ghcr.io/ayabelkacem/tp-devsecops@sha256:d31b1c194f72cf660c8bb3b2a048b1457ec087ff31aeb4ae086f1a98323ed184
+      image: ghcr.io/ayabelkacem/tp-devsecops-ci@sha256:9c86ee21d13d692a245d5a6bb3e5e971e774c90e6476dafcbcf9e494575d48d5
       command: ["sleep", "3600"]
       securityContext:
         privileged: false
