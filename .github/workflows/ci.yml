@@ -64,15 +64,17 @@ jobs:
           cosign-release: v2.4.1
       - name: Sign image by digest
         env:
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_KEY_B64: ${{ secrets.COSIGN_PRIVATE_KEY_B64 }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          if [ -z "$COSIGN_PRIVATE_KEY" ]; then
-            echo "::error::COSIGN_PRIVATE_KEY is not configured in protected repository variables."
+          if [ -z "$COSIGN_KEY_B64" ]; then
+            echo "::error::COSIGN_PRIVATE_KEY_B64 is not configured in repository secrets."
             exit 1
           fi
           if [ -z "$COSIGN_PASSWORD" ]; then
-            echo "::error::COSIGN_PASSWORD is not configured in protected repository variables."
+            echo "::error::COSIGN_PASSWORD is not configured in repository secrets."
             exit 1
           fi
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "$IMAGE_DIGEST"
+          echo "$COSIGN_KEY_B64" | base64 -d > /tmp/cosign.key
+          cosign sign --yes --key /tmp/cosign.key "$IMAGE_DIGEST"
+          rm -f /tmp/cosign.key
